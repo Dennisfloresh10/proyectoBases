@@ -1,0 +1,241 @@
+erDiagram
+
+    USUARIO {
+        int id_usuario PK
+        string nombre
+        string email
+        string telefono
+        string password_hash
+        string estado
+    }
+
+    ROL {
+        int id_rol PK
+        string nombre
+    }
+
+    USUARIO_ROL {
+        int id_usuario_rol PK
+        int id_usuario FK
+        int id_rol FK
+    }
+
+    CASILLERO {
+        int id_casillero PK
+        string codigo
+        int id_usuario FK
+        string direccion_usa
+        string estado
+    }
+
+    DIRECCION {
+        int id_direccion PK
+        int id_usuario FK
+        string pais
+        string ciudad
+        string direccion
+        string tipo
+    }
+
+    PROVEEDOR {
+        int id_proveedor PK
+        string nombre
+        string tipo
+    }
+
+    PAQUETE {
+        int id_paquete PK
+        string tracking_number
+        int id_casillero FK
+        int id_proveedor FK
+        string estado
+    }
+
+    PAQUETE_HISTORIAL {
+        int id_historial PK
+        int id_paquete FK
+        string estado
+        string observacion
+    }
+
+    BODEGA {
+        int id_bodega PK
+        string nombre
+        string ubicacion
+        string estado
+    }
+
+    PAQUETE_BODEGA {
+        int id_paquete_bodega PK
+        int id_paquete FK
+        int id_bodega FK
+        string estado
+    }
+
+    MOVIMIENTO_BODEGA {
+        int id_movimiento PK
+        int id_paquete FK
+        int id_bodega_origen FK
+        int id_bodega_destino FK
+        string tipo_movimiento
+    }
+
+    ENVIO {
+        int id_envio PK
+        int id_usuario FK
+        decimal peso_total
+        decimal costo_total
+        string estado
+    }
+
+    ENVIO_DETALLE {
+        int id_envio_detalle PK
+        int id_envio FK
+        int id_paquete FK
+    }
+
+    TRANSPORTISTA {
+        int id_transportista PK
+        string nombre
+        string tipo
+    }
+
+    ENVIO_TRANSPORTE {
+        int id_envio_transporte PK
+        int id_envio FK
+        int id_transportista FK
+        string tracking_externo
+    }
+
+    RUTA_ENVIO {
+        int id_ruta PK
+        int id_envio FK
+        string pais_origen
+        string pais_destino
+        string estado
+    }
+
+    TARIFA {
+        int id_tarifa PK
+        string nombre
+        decimal precio_por_libra
+    }
+
+    CALCULO_TARIFA {
+        int id_calculo PK
+        int id_envio FK
+        int id_tarifa FK
+        decimal peso_total
+        decimal costo_calculado
+    }
+
+    PAGO {
+        int id_pago PK
+        int id_usuario FK
+        int id_envio FK
+        decimal monto
+        string estado
+    }
+
+    FACTURA {
+        int id_factura PK
+        int id_pago FK
+        string numero_factura
+    }
+
+    NOTIFICACION {
+        int id_notificacion PK
+        int id_usuario FK
+        string mensaje
+        string estado
+    }
+
+    AUDITORIA {
+        int id_auditoria PK
+        int id_usuario FK
+        string accion
+        string tabla_afectada
+    }
+
+    SESION_USUARIO {
+        int id_sesion PK
+        int id_usuario FK
+        string token
+        string estado
+    }
+
+    METODO_PAGO {
+        int id_metodo_pago PK
+        string nombre
+        string estado
+    }
+
+    ESTADO_PAQUETE_CATALOGO {
+        int id_estado PK
+        string nombre
+    }
+
+    TRACKING_EVENTO {
+        int id_evento PK
+        int id_paquete FK
+        string estado
+        string ubicacion
+    }
+
+    CONFIGURACION_SISTEMA {
+        int id_config PK
+        string clave
+        string valor
+    }
+
+    SOPORTE_TICKET {
+        int id_ticket PK
+        int id_usuario FK
+        string estado
+        string asunto
+    }
+
+    %% RELACIONES
+
+    USUARIO ||--o{ USUARIO_ROL : tiene
+    ROL ||--o{ USUARIO_ROL : asignado
+
+    USUARIO ||--o{ CASILLERO : posee
+    USUARIO ||--o{ DIRECCION : tiene
+
+    CASILLERO ||--o{ PAQUETE : recibe
+    PROVEEDOR ||--o{ PAQUETE : envía
+
+    PAQUETE ||--o{ PAQUETE_HISTORIAL : registra
+
+    BODEGA ||--o{ PAQUETE_BODEGA : almacena
+    PAQUETE ||--o{ PAQUETE_BODEGA : ubicado_en
+
+    PAQUETE ||--o{ MOVIMIENTO_BODEGA : movimientos
+    BODEGA ||--o{ MOVIMIENTO_BODEGA : origen_destino
+
+    USUARIO ||--o{ ENVIO : crea
+    ENVIO ||--o{ ENVIO_DETALLE : contiene
+    PAQUETE ||--o{ ENVIO_DETALLE : incluido
+
+    ENVIO ||--o{ ENVIO_TRANSPORTE : asigna
+    TRANSPORTISTA ||--o{ ENVIO_TRANSPORTE : transporta
+
+    ENVIO ||--|| RUTA_ENVIO : tiene
+
+    ENVIO ||--o{ CALCULO_TARIFA : calcula
+    TARIFA ||--o{ CALCULO_TARIFA : usa
+
+    USUARIO ||--o{ PAGO : realiza
+    ENVIO ||--o{ PAGO : genera
+
+    PAGO ||--|| FACTURA : genera
+
+    USUARIO ||--o{ NOTIFICACION : recibe
+    USUARIO ||--o{ AUDITORIA : genera
+
+    USUARIO ||--o{ SESION_USUARIO : inicia
+
+    USUARIO ||--o{ SOPORTE_TICKET : crea
+
+    PAQUETE ||--o{ TRACKING_EVENTO : registra
