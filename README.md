@@ -81,5 +81,6 @@ Contiene las páginas y recursos visuales del sistema.
 
 Contiene la documentación técnica y funcional del proyecto.
 
+HACK TRICK DE MESSI
 ---
 
